@@ -34,24 +34,24 @@ function main(container) {
     };
 
 
-    mxShape.prototype.getPorts = function() {
+    mxShape.prototype.getPorts = function () {
         return ports;
     };
 
-    graph.connectionHandler.isConnectableCell = function(cell) {
+    graph.connectionHandler.isConnectableCell = function (cell) {
         return false;
     };
-    mxEdgeHandler.prototype.isConnectableCell = function(cell) {
+    mxEdgeHandler.prototype.isConnectableCell = function (cell) {
         return graph.connectionHandler.isConnectableCell(cell);
     };
 
     mxGraphHandler.prototype.moveEnabled = false;
     // Disables existing port functionality
-    graph.view.getTerminalPort = function(state, terminal, source) {
+    graph.view.getTerminalPort = function (state, terminal, source) {
         return terminal;
     };
 
-    graph.getConnectionConstraint = function(edge, terminal, source) {
+    graph.getConnectionConstraint = function (edge, terminal, source) {
         var key = (source) ? mxConstants.STYLE_SOURCE_PORT : mxConstants.STYLE_TARGET_PORT;
         var id = edge.style[key];
 
@@ -66,7 +66,7 @@ function main(container) {
     };
 
     graphGetConnectionPoint = graph.getConnectionPoint;
-    graph.getConnectionPoint = function(vertex, constraint) {
+    graph.getConnectionPoint = function (vertex, constraint) {
         if (constraint.id != null && vertex != null && vertex.shape != null) {
             var port = vertex.shape.getPorts()[constraint.id];
 
@@ -91,10 +91,9 @@ function main(container) {
 
     grafo.model.centerZoom = false;
 
-    graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
+    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
         var cell = evt.getProperty('cell');
-        console.log(cell);
-        if(cell.isVertex()==true){
+        if (cell.isVertex() == true) {
             grafo.renameFeature(cell);
             evt.consume();
         }
@@ -102,14 +101,14 @@ function main(container) {
     });
 
 
-    document.body.appendChild(mxUtils.button('View XML', function() {
+    document.body.appendChild(mxUtils.button('View XML', function () {
         var encoder = new mxCodec();
         var node = encoder.encode(graph.getModel());
         mxUtils.popup(mxUtils.getXml(node), true);
     }));
 
     undoManager = new mxUndoManager();
-    var listener = function(sender, evt) {
+    var listener = function (sender, evt) {
         undoManager.undoableEditHappened(evt.getProperty('edit'));
     };
     grafo.model.getModel().addListener(mxEvent.UNDO, listener);
@@ -117,25 +116,25 @@ function main(container) {
 
 
     var mxCellRendererInstallCellOverlayListeners = mxCellRenderer.prototype.installCellOverlayListeners;
-    mxCellRenderer.prototype.installCellOverlayListeners = function(state, overlay, shape) {
+    mxCellRenderer.prototype.installCellOverlayListeners = function (state, overlay, shape) {
         mxCellRendererInstallCellOverlayListeners.apply(this, arguments);
         var graph = state.view.graph;
 
         mxEvent.addGestureListeners(shape.node,
-            function(evt) {
+            function (evt) {
                 graph.fireMouseEvent(mxEvent.MOUSE_DOWN, new mxMouseEvent(evt, state));
             },
-            function(evt) {
+            function (evt) {
                 graph.fireMouseEvent(mxEvent.MOUSE_MOVE, new mxMouseEvent(evt, state));
             },
-            function(evt) {
+            function (evt) {
                 if (mxClient.IS_QUIRKS) {
                     graph.fireMouseEvent(mxEvent.MOUSE_UP, new mxMouseEvent(evt, state));
                 }
             });
 
         if (!mxClient.IS_TOUCH) {
-            mxEvent.addListener(shape.node, 'mouseup', function(evt) {
+            mxEvent.addListener(shape.node, 'mouseup', function (evt) {
                 overlay.fireEvent(new mxEventObject(mxEvent.CLICK,
                     'event', evt, 'cell', state.cell));
             });
@@ -143,7 +142,7 @@ function main(container) {
     };
 
 
-    mxEvent.addMouseWheelListener(function(evt, up) {
+    mxEvent.addMouseWheelListener(function (evt, up) {
         if (!mxEvent.isConsumed(evt)) {
             if (up) {
                 grafo.model.zoomIn();
@@ -159,32 +158,32 @@ function main(container) {
     graph.popupMenuHandler.autoExpand = true;
 
     // Installs context menu
-    graph.popupMenuHandler.factoryMethod = function(menu, cell, evt) {
+    graph.popupMenuHandler.factoryMethod = function (menu, cell, evt) {
         if (cell != null) {
             if (grafo.model.getModel().isVertex(cell)) {
-                menu.addItem('Make Mandatory', null, function() {
+                menu.addItem('Make Mandatory', null, function () {
                     changeTypeFeature([cell], 'mandatory');
                 });
 
-                menu.addItem('Make Optional', null, function() {
+                menu.addItem('Make Optional', null, function () {
                     changeTypeFeature([cell], 'optional');
                 });
 
-                menu.addItem('Make Alternative', null, function() {
+                menu.addItem('Make Alternative', null, function () {
                     changeTypeFeature([cell], 'alternative');
                 });
 
-                menu.addItem('Remove Feature', null, function() {
+                menu.addItem('Remove Feature', null, function () {
                     grafo.removeFeature([cell]);
 
                 });
             }
         } else {
-            menu.addItem('Create Feature', null, function() {
+            menu.addItem('Create Feature', null, function () {
                 showPopUp(modalFeature);
             });
 
-            menu.addItem('Create Association', null, function() {
+            menu.addItem('Create Association', null, function () {
                 showPopUp(modalAssociation);
             });
         }

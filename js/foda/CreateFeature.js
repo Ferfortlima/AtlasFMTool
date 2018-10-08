@@ -5,8 +5,6 @@ function createFeature(name, type) {
 
   if (checkDuplicateFeature(name) && name != "") {
     grafo.model.getModel().beginUpdate();
-    console.log("criar feature");
-
     try {
       switch (type) {
         case "mandatory":

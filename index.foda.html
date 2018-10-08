@@ -30,7 +30,7 @@
 	<script src="./js/foda/AlternativeAssociation.js"></script>
 	<script src="./js/foda/ChangeType.js"></script>
 
-	<!--general imports-->	
+	<!--general imports-->
 	<script src="./js/FunctionBezierCurve.js"></script>
 	<script src="./js/Modal.js"></script>
 	<script src="./js/AdjustCanvas.js"></script>
@@ -48,11 +48,11 @@
 	<div class="topBar">
 		<input id="modelName" class="modelName" type="text" placeholder="Model name">
 		<div class="topBarIconGroup" id="topBarIconGroup">
-			<a onclick="undoManager.undo()" href="javascript:void(0);">
+			<a onclick="grafo.undoFunction()" href="javascript:void(0);">
 				<span class="tooltip">Undo</span>
 				<i class="fas fa-undo"></i> </a>
-			<a onclick="undoManager.redo()" href="javascript:void(0);">
-				<span class="tooltip">Undo</span>
+			<a onclick="grafo.redoFunction()" href="javascript:void(0);">
+				<span class="tooltip">Redo</span>
 				<i class="fas fa-redo"></i> </a>
 			<a onclick="grafo.clearGraph()" href="javascript:void(0);">
 				<span class="tooltip">Create Model</span>
@@ -72,10 +72,10 @@
 
 	<!--Top Bar Small Screen < 600 width-->
 	<div class="topBarIconGroupSmall" id="topBarIconGroupSmall">
-		<a onclick="undoManager.undo()" href="javascript:void(0);">
+		<a onclick="grafo.undoFunction()" href="javascript:void(0);">
 			<span class="tooltip">Undo</span>
 			<i class="fas fa-undo"></i> </a>
-		<a onclick="undoManager.redo()" href="javascript:void(0);">
+		<a onclick="grafo.redoFunction()" href="javascript:void(0);">
 			<span class="tooltip">Redo</span>
 			<i class="fas fa-redo"></i> </a>
 		<a onclick="createLoadModalButtonClick()" href="javascript:void(0);">
@@ -133,7 +133,8 @@
 			<select id="feature1id2" onchange="grafo.setSelectBoxChild()"></select>
 			<label><b>Child Feature</b></label>
 			<select id="feature2id2"></select>
-			<button id="createAssociationSubmitButton" onclick="createAssociation(feature1id2.value,feature2id2.value)" type="submit">Create</button>
+			<button id="createAssociationSubmitButton" onclick="grafo.createAssociation(feature1id2.value,feature2id2.value)"
+			 type="submit">Create</button>
 		</div>
 	</div>
 

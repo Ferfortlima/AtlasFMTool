@@ -4,37 +4,44 @@ function Graph(model) {
   this.listAssociations = [];
 }
 
-Graph.prototype.setModel = function(model) {
+Graph.prototype.setModel = function (model) {
   this.model = model;
 };
 
-Graph.prototype.getModel = function() {
+Graph.prototype.getModel = function () {
   return this.model;
 };
 
-Graph.prototype.getAllFeatures = function() {
+Graph.prototype.getAllFeatures = function () {
   return this.listFeatures;
 };
 
-Graph.prototype.addFeature = function(feature) {
+Graph.prototype.undoFunction = function () {
+  undoManager.undo();
+}
+
+Graph.prototype.redoFunction = function () {
+  undoManager.redo();
+
+}
+
+Graph.prototype.addFeature = function (feature) {
   if (feature != undefined) {
     this.listFeatures.push(feature);
-    console.log(undoManager);
-
     return true;
   } else {
-    console.log(undoManager);
-
-    return false;
   }
 };
 
-Graph.prototype.addAssociation = function(association) {
+Graph.prototype.addAssociation = function (association) {
   this.listAssociations.push(association);
-  console.log(undoManager);
 };
 
-Graph.prototype.getFeaturesById = function(id) {
+Graph.prototype.createAssociation = function (feat1name, feat2name) {
+  createAssociation(feat1name, feat2name);
+};
+
+Graph.prototype.getFeaturesById = function (id) {
   var result;
   for (var i = 0; i < this.listFeatures.length; i++) {
     if (this.listFeatures[i].getName() == id) {
@@ -44,7 +51,7 @@ Graph.prototype.getFeaturesById = function(id) {
   return result;
 };
 
-Graph.prototype.getVertexByValue = function(value) {
+Graph.prototype.getVertexByValue = function (value) {
   var result;
   var list = grafo.model
     .getModel()
@@ -57,7 +64,7 @@ Graph.prototype.getVertexByValue = function(value) {
   return result;
 };
 
-Graph.prototype.getFeatureNames = function() {
+Graph.prototype.getFeatureNames = function () {
   var result = [];
   for (var i = 0; i < this.listFeatures.length; i++) {
     result.push(this.listFeatures[i].name);
@@ -65,7 +72,7 @@ Graph.prototype.getFeatureNames = function() {
   return result;
 };
 
-Graph.prototype.organizeGraph = function() {
+Graph.prototype.organizeGraph = function () {
   layout.useBoundingBox = false;
   layout.edgeRouting = false;
   layout.levelDistance = 50;
@@ -77,7 +84,7 @@ Graph.prototype.organizeGraph = function() {
   grafo.setSelectBoxChild();
 };
 
-Graph.prototype.removeFeature = function(feature) {
+Graph.prototype.removeFeature = function (feature) {
   this.removeAssociations(feature[0]);
 
   for (var i = 0; i < this.listFeatures.length; i++) {
@@ -92,7 +99,7 @@ Graph.prototype.removeFeature = function(feature) {
   grafo.organizeGraph();
 };
 
-Graph.prototype.removeAssociations = function(feature) {
+Graph.prototype.removeAssociations = function (feature) {
   for (var i = 0; i < this.listAssociations.length; i++) {
     if (this.listAssociations[i].target == feature) {
       this.getFeaturesByVertex(this.listAssociations[i].source).removeChild(
@@ -113,7 +120,7 @@ Graph.prototype.removeAssociations = function(feature) {
   }
 };
 
-Graph.prototype.getFeaturesByVertex = function(vertex) {
+Graph.prototype.getFeaturesByVertex = function (vertex) {
   var result;
   for (var i = 0; i < this.listFeatures.length; i++) {
     if (this.listFeatures[i].vertex.id == vertex.id) {
@@ -123,7 +130,7 @@ Graph.prototype.getFeaturesByVertex = function(vertex) {
   return result;
 };
 
-Graph.prototype.getNoParent = function() {
+Graph.prototype.getNoParent = function () {
   var result = [];
   for (var i = 0; i < this.listFeatures.length; i++) {
     if (this.listFeatures[i].parent.length == 0) {
@@ -133,7 +140,7 @@ Graph.prototype.getNoParent = function() {
   return result;
 };
 
-Graph.prototype.setSelectBoxChild = function() {
+Graph.prototype.setSelectBoxChild = function () {
   var selectBox = document.getElementById("feature2id2");
 
   var selectParentNode = selectBox.parentNode;
@@ -144,9 +151,9 @@ Graph.prototype.setSelectBoxChild = function() {
   for (var i = 0, l = featuresNoParent.length; i < l; i++) {
     if (
       document.getElementById("feature1id2").value !=
-        featuresNoParent[i].name &&
+      featuresNoParent[i].name &&
       document.getElementById("feature1id2").value !=
-        featuresNoParent[i].vertex.value
+      featuresNoParent[i].vertex.value
     ) {
       if (
         this.getFeaturesById(document.getElementById("feature1id2").value)
@@ -175,7 +182,7 @@ Graph.prototype.setSelectBoxChild = function() {
   }
 };
 
-Graph.prototype.setSelectBoxParent = function() {
+Graph.prototype.setSelectBoxParent = function () {
   var selectBox = document.getElementById("feature1id2");
 
   var selectParentNode = selectBox.parentNode;
@@ -192,7 +199,7 @@ Graph.prototype.setSelectBoxParent = function() {
   }
 };
 
-Graph.prototype.sortEdges = function() {
+Graph.prototype.sortEdges = function () {
   var edges = grafo.model
     .getModel()
     .getChildEdges(grafo.model.getDefaultParent());
@@ -218,7 +225,7 @@ Graph.prototype.sortEdges = function() {
   grafo.model.addCells(mandatories, grafo.model.getDefaultParent());
 };
 
-Graph.prototype.renameFeature = function(cell) {
+Graph.prototype.renameFeature = function (cell) {
   var newName = prompt("Please enter your name:", cell.value);
   if (
     newName != null &&
@@ -238,7 +245,7 @@ Graph.prototype.renameFeature = function(cell) {
   }
 };
 
-Graph.prototype.getXml = function() {
+Graph.prototype.getXml = function () {
   var encoder = new mxCodec();
   var modelName = document.getElementById("modelName").value;
   var node = encoder.encode(grafo.model.getModel());
@@ -251,7 +258,7 @@ Graph.prototype.getXml = function() {
   }
 };
 
-Graph.prototype.clearGraph = function() {
+Graph.prototype.clearGraph = function () {
   grafo.model.removeCells(
     grafo.model.getChildVertices(grafo.model.getDefaultParent())
   );

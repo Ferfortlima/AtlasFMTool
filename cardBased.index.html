@@ -7,8 +7,10 @@
 	<title>Atlas</title>
 	<link rel="stylesheet" type="text/css" href="./css/myStyle.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk"
+	 crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P"
+	 crossorigin="anonymous">
 	<script type="text/javascript">
 		mxBasePath = './mxgraph';
 	</script>
@@ -32,7 +34,7 @@
 		var grafo;
 		var rubberband;
 		var layout;
-var undoManager;
+		var undoManager;
 		function main(container) {
 			mxEvent.disableContextMenu(document.body);
 			var graph = new mxGraph(container);
@@ -66,24 +68,24 @@ var undoManager;
 			};
 
 
-			mxShape.prototype.getPorts = function() {
+			mxShape.prototype.getPorts = function () {
 				return ports;
 			};
 
-			graph.connectionHandler.isConnectableCell = function(cell) {
+			graph.connectionHandler.isConnectableCell = function (cell) {
 				return false;
 			};
-			mxEdgeHandler.prototype.isConnectableCell = function(cell) {
+			mxEdgeHandler.prototype.isConnectableCell = function (cell) {
 				return graph.connectionHandler.isConnectableCell(cell);
 			};
 
 			mxGraphHandler.prototype.moveEnabled = false;
 			// Disables existing port functionality
-			graph.view.getTerminalPort = function(state, terminal, source) {
+			graph.view.getTerminalPort = function (state, terminal, source) {
 				return terminal;
 			};
 
-			graph.getConnectionConstraint = function(edge, terminal, source) {
+			graph.getConnectionConstraint = function (edge, terminal, source) {
 				var key = (source) ? mxConstants.STYLE_SOURCE_PORT : mxConstants.STYLE_TARGET_PORT;
 				var id = edge.style[key];
 
@@ -98,7 +100,7 @@ var undoManager;
 			};
 
 			graphGetConnectionPoint = graph.getConnectionPoint;
-			graph.getConnectionPoint = function(vertex, constraint) {
+			graph.getConnectionPoint = function (vertex, constraint) {
 				if (constraint.id != null && vertex != null && vertex.shape != null) {
 					var port = vertex.shape.getPorts()[constraint.id];
 
@@ -124,10 +126,9 @@ var undoManager;
 
 			grafo.model.centerZoom = false;
 
-			graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt) {
+			graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
 				var cell = evt.getProperty('cell');
-				console.log(cell);
-				if(cell.isVertex()==true){
+				if (cell.isVertex() == true) {
 					grafo.renameFeature(cell);
 					evt.consume();
 				}
@@ -135,15 +136,14 @@ var undoManager;
 			});
 
 
-			document.body.appendChild(mxUtils.button('View XML', function() {
+			document.body.appendChild(mxUtils.button('View XML', function () {
 				var encoder = new mxCodec();
 				var node = encoder.encode(graph.getModel());
 				mxUtils.popup(mxUtils.getXml(node), true);
 			}));
 
 			undoManager = new mxUndoManager();
-			console.log(undoManager);
-			var listener = function(sender, evt) {
+			var listener = function (sender, evt) {
 				undoManager.undoableEditHappened(evt.getProperty('edit'));
 			};
 			grafo.model.getModel().addListener(mxEvent.UNDO, listener);
@@ -151,25 +151,25 @@ var undoManager;
 
 
 			var mxCellRendererInstallCellOverlayListeners = mxCellRenderer.prototype.installCellOverlayListeners;
-			mxCellRenderer.prototype.installCellOverlayListeners = function(state, overlay, shape) {
+			mxCellRenderer.prototype.installCellOverlayListeners = function (state, overlay, shape) {
 				mxCellRendererInstallCellOverlayListeners.apply(this, arguments);
 				var graph = state.view.graph;
 
 				mxEvent.addGestureListeners(shape.node,
-					function(evt) {
+					function (evt) {
 						graph.fireMouseEvent(mxEvent.MOUSE_DOWN, new mxMouseEvent(evt, state));
 					},
-					function(evt) {
+					function (evt) {
 						graph.fireMouseEvent(mxEvent.MOUSE_MOVE, new mxMouseEvent(evt, state));
 					},
-					function(evt) {
+					function (evt) {
 						if (mxClient.IS_QUIRKS) {
 							graph.fireMouseEvent(mxEvent.MOUSE_UP, new mxMouseEvent(evt, state));
 						}
 					});
 
 				if (!mxClient.IS_TOUCH) {
-					mxEvent.addListener(shape.node, 'mouseup', function(evt) {
+					mxEvent.addListener(shape.node, 'mouseup', function (evt) {
 						overlay.fireEvent(new mxEventObject(mxEvent.CLICK,
 							'event', evt, 'cell', state.cell));
 					});
@@ -177,7 +177,7 @@ var undoManager;
 			};
 
 
-			mxEvent.addMouseWheelListener(function(evt, up) {
+			mxEvent.addMouseWheelListener(function (evt, up) {
 				if (!mxEvent.isConsumed(evt)) {
 					if (up) {
 						grafo.model.zoomIn();
@@ -193,32 +193,32 @@ var undoManager;
 			graph.popupMenuHandler.autoExpand = true;
 
 			// Installs context menu
-			graph.popupMenuHandler.factoryMethod = function(menu, cell, evt) {
+			graph.popupMenuHandler.factoryMethod = function (menu, cell, evt) {
 				if (cell != null) {
 					if (grafo.model.getModel().isVertex(cell)) {
-						menu.addItem('Make Mandatory', null, function() {
+						menu.addItem('Make Mandatory', null, function () {
 							changeTypeFeature([cell], 'mandatory');
 						});
 
-						menu.addItem('Make Optional', null, function() {
+						menu.addItem('Make Optional', null, function () {
 							changeTypeFeature([cell], 'optional');
 						});
 
-						menu.addItem('Make Alternative', null, function() {
+						menu.addItem('Make Alternative', null, function () {
 							changeTypeFeature([cell], 'alternative');
 						});
 
-						menu.addItem('Remove Feature', null, function() {
+						menu.addItem('Remove Feature', null, function () {
 							grafo.removeFeature([cell]);
 
 						});
 					}
 				} else {
-					menu.addItem('Create Feature', null, function() {
+					menu.addItem('Create Feature', null, function () {
 						showPopUp(modalFeature);
 					});
 
-					menu.addItem('Create Association', null, function() {
+					menu.addItem('Create Association', null, function () {
 						showPopUp(modalAssociation);
 					});
 				}
@@ -228,7 +228,7 @@ var undoManager;
 		};
 
 
-		mxEdgeStyle.MyStyle = function(state, source, target, points, result) {
+		mxEdgeStyle.MyStyle = function (state, source, target, points, result) {
 			if (source != null && target != null) {
 				var cont = grafo.model.getEdges(source.cell.source, grafo.model.getDefaultParent(), false, true, false, false);
 
@@ -262,23 +262,23 @@ var undoManager;
 		<input id="modelName" class="modelName" type="text" placeholder="Model name">
 		<div class="topBarIconGroup" id="topBarIconGroup">
 			<a onclick="undoManager.undo()" href="javascript:void(0);">
-	                <span class="tooltip">Undo</span>
-	                <i class="fas fa-undo"></i> </a>
+				<span class="tooltip">Undo</span>
+				<i class="fas fa-undo"></i> </a>
 			<a onclick="undoManager.redo()" href="javascript:void(0);">
-							    <span class="tooltip">Undo</span>
-							    <i class="fas fa-redo"></i> </a>
+				<span class="tooltip">Undo</span>
+				<i class="fas fa-redo"></i> </a>
 			<a onclick="grafo.clearGraph()" href="javascript:void(0);">
-							    <span class="tooltip">Create Model</span>
-			            <i class="fa fa-file"></i> </a>
+				<span class="tooltip">Create Model</span>
+				<i class="fa fa-file"></i> </a>
 			<a onclick="createLoadModalButtonClick()" href="javascript:void(0);">
-	                <span class="tooltip">Load Model</span>
-	                <i class="fa fa-upload"></i> </a>
+				<span class="tooltip">Load Model</span>
+				<i class="fa fa-upload"></i> </a>
 			<a onclick="grafo.getXml()" href="javascript:void(0);">
-	                <span class="tooltip">Save as .xml</span>
-	                <i class="fa fa-save"></i> </a>
+				<span class="tooltip">Save as .xml</span>
+				<i class="fa fa-save"></i> </a>
 			<a onclick="show()" href="javascript:void(0)">
-	                <span class="tooltip">Print</span>
-	                <i class="fa fa-print"></i> </a>
+				<span class="tooltip">Print</span>
+				<i class="fa fa-print"></i> </a>
 		</div>
 	</div>
 
@@ -286,34 +286,34 @@ var undoManager;
 	<!--Top Bar Small Screen < 600 width-->
 	<div class="topBarIconGroupSmall" id="topBarIconGroupSmall">
 		<a onclick="undoManager.undo()" href="javascript:void(0);">
-								<span class="tooltip">Undo</span>
-								<i class="fas fa-undo"></i> </a>
+			<span class="tooltip">Undo</span>
+			<i class="fas fa-undo"></i> </a>
 		<a onclick="undoManager.redo()" href="javascript:void(0);">
-			                <span class="tooltip">Redo</span>
-			                <i class="fas fa-redo"></i> </a>
+			<span class="tooltip">Redo</span>
+			<i class="fas fa-redo"></i> </a>
 		<a onclick="createLoadModalButtonClick()" href="javascript:void(0);">
-			            <span class="tooltip">Load Model</span>
-			            <i class="fa fa-upload"></i> </a>
+			<span class="tooltip">Load Model</span>
+			<i class="fa fa-upload"></i> </a>
 		<a onclick="grafo.getXml()" href="javascript:void(0);">
-			            <span class="tooltip">Save as .xml</span>
-			            <i class="fa fa-save"></i> </a>
+			<span class="tooltip">Save as .xml</span>
+			<i class="fa fa-save"></i> </a>
 		<a onclick="show()" href="javascript:void(0)">
-			            <span class="tooltip">Print</span>
-			            <i class="fa fa-print"></i> </a>
+			<span class="tooltip">Print</span>
+			<i class="fa fa-print"></i> </a>
 	</div>
 
 	<!--Side Bar-->
 	<div class="sideBar">
 		<div class="sideBarIconGroup">
 			<a onclick="showPopUp(modalFeature);" href="javascript:void(0);">
-			                <span class="tooltip">Create Feature</span>
-			                <i class="fas fa-plus-square"></i></a>
+				<span class="tooltip">Create Feature</span>
+				<i class="fas fa-plus-square"></i></a>
 			<a onclick="showPopUp(modalAssociation);" href="javascript:void(0);">
-			                <span class="tooltip">Create Association</span>
-			                <i class="fas fa-arrows-alt-v"></i></a>
+				<span class="tooltip">Create Association</span>
+				<i class="fas fa-arrows-alt-v"></i></a>
 			<a onclick="validateModel()" href="javascript:void(0);">
-			                <span class="tooltip">Check Model</span>
-			                <i class="fa fa-check"></i></a>
+				<span class="tooltip">Check Model</span>
+				<i class="fa fa-check"></i></a>
 
 		</div>
 	</div>
@@ -328,10 +328,10 @@ var undoManager;
 			<input id="featureName2" type="text" name="Fname" value="">
 			<label><b>Feature type</b></label>
 			<select id="featureType2">
-	    <option value="mandatory" >Mandatory</option>
-	    <option value="optional" >Optional</option>
-	    <option value="alternative" >Alternative</option>
-	</select>
+				<option value="mandatory">Mandatory</option>
+				<option value="optional">Optional</option>
+				<option value="alternative">Alternative</option>
+			</select>
 			<button id="createFeatureSubmitButton" onclick="createFeature(featureName2.value,featureType2.value)" type="submit">Create</button>
 		</div>
 	</div>
@@ -353,10 +353,10 @@ var undoManager;
 	<!--Load File Modal-->
 	<div class="modal" id="loadFileModal">
 		<div id="loadFileModalContent" class="loadFileModalContent">
-			<div class="closeButton"> <a onclick="closePopUp(loadFileModal);" href="javascript:void(0);"><i class="fa fa-times"></i></a><br/>
+			<div class="closeButton"> <a onclick="closePopUp(loadFileModal);" href="javascript:void(0);"><i class="fa fa-times"></i></a><br />
 			</div>
-			<label><b>Select File</b></label><br/>
-			<input id="fileInput" type="file" accept=".xml" value="select"><br/>
+			<label><b>Select File</b></label><br />
+			<input id="fileInput" type="file" accept=".xml" value="select"><br />
 			<button id="loadFileSubmitButton" onclick="loadFile(grafo.model)" type="submit">Import</button>
 		</div>
 	</div>
