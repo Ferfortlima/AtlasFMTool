@@ -18,6 +18,18 @@ function createFeature(name, type) {
             30,
             "mandatory"
           );
+          var mandatory = grafo.model.insertVertex(
+            vertex,
+            vertex.value + "Mandatory",
+            "",
+            0.5,
+            0,
+            7,
+            7,
+            "portMandatory"
+          );
+          mandatory.geometry.offset = new mxPoint(-5, 0);
+          mandatory.geometry.relative = true;
           feature = new Feature(vertex);
           grafo.addFeature(feature);
           break;
@@ -40,7 +52,7 @@ function createFeature(name, type) {
             0,
             7,
             7,
-            "port"
+            "portOptional"
           );
           optional.geometry.offset = new mxPoint(-5, 0);
           optional.geometry.relative = true;
@@ -57,6 +69,20 @@ function createFeature(name, type) {
             80,
             30,
             "alternative"
+          );
+          feature = new Feature(vertex);
+          grafo.addFeature(feature);
+          break;
+          case "or":
+          var vertex = grafo.model.insertVertex(
+            grafo.model.getDefaultParent(),
+            name,
+            name,
+            10,
+            setY(),
+            80,
+            30,
+            "or"
           );
           feature = new Feature(vertex);
           grafo.addFeature(feature);
@@ -111,13 +137,22 @@ function createStyles() {
   grafo.model.stylesheet.putCellStyle("alternative", style);
 
   style = new Object();
+  style[mxConstants.STYLE_FILLCOLOR] = "black";
+  style[mxConstants.STYLE_STROKECOLOR] = "black";
+  style[mxConstants.STYLE_FONTCOLOR] = "black";
+  style[mxConstants.STYLE_RESIZABLE] = false;
+  style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_ELLIPSE;
+  style[mxConstants.STYLE_PERIMETER] = mxPerimeter.EllipsePerimeter;
+  grafo.model.getStylesheet().putCellStyle("portMandatory", style);
+
+  style = new Object();
   style[mxConstants.STYLE_FILLCOLOR] = "white";
   style[mxConstants.STYLE_STROKECOLOR] = "black";
   style[mxConstants.STYLE_FONTCOLOR] = "black";
   style[mxConstants.STYLE_RESIZABLE] = false;
   style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_ELLIPSE;
   style[mxConstants.STYLE_PERIMETER] = mxPerimeter.EllipsePerimeter;
-  grafo.model.getStylesheet().putCellStyle("port", style);
+  grafo.model.getStylesheet().putCellStyle("portOptional", style);
 }
 
 function checkDuplicateFeature(name) {
